@@ -1,0 +1,18 @@
+New ScopeTable with id 1 created
+
+Not found
+
+Inserted in ScopeTable# 1 at position 3, 0
+
+Found in ScopeTable# 1at position 3, 0
+
+ < sakib : abrar >  already exists in current ScopeTable
+
+Not found
+
+Inserted in ScopeTable# 1 at position 1, 0
+
+Found in ScopeTable# 1at position 1, 0
+
+ < riad : ashraf >  already exists in current ScopeTable
+

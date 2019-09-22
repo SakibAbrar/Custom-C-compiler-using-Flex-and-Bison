@@ -1,6 +1,10 @@
 #include <iostream>
+#include <fstream>
 #include <list>
 #include <cstdio>
+
+std::ofstream logFile("log.txt");
+
 
 /*
 ////////////////////////////////////////
@@ -108,7 +112,7 @@ public:
         }
         id = ++count;
         parentScope = nullptr;
-        std::cout << "New ScopeTable with id " << this->id << " created" << std::endl << std::endl;
+        logFile << "New ScopeTable with id " << this->id << " created" << std::endl << std::endl;
     }
 
     ScopeTable(ScopeTable* parent){
@@ -119,7 +123,7 @@ public:
         }
         parentScope = parent;
         id = ++count;
-        std::cout << "New ScopeTable with id " << this->id << " created" << std::endl << std::endl;
+        logFile << "New ScopeTable with id " << this->id << " created" << std::endl << std::endl;
     }
 
 
@@ -159,14 +163,14 @@ public:
         for(SymbolInfo* idx = bucket[hval]; idx!=nullptr; idx = idx->next){
 
             if((*idx).getName() == s){
-                std::cout << "Found in ScopeTable# " << this->id <<  "at position " << hval << ", " <<  pos << std::endl << std::endl;
+                logFile << "Found in ScopeTable# " << this->id <<  "at position " << hval << ", " <<  pos << std::endl << std::endl;
                 return idx;
             }
             pos++;
 
         }
 
-        std::cout << "Not found" << std::endl << std::endl;
+        logFile << "Not found" << std::endl << std::endl;
 
         return nullptr;
     }
@@ -182,7 +186,7 @@ public:
 
         /// we won't be allowing any duplicate(by name) in each ScopeTables
         if(temp){
-            std::cout << " < " << name << " : " << type << " > " << " already exists in current ScopeTable" << std::endl << std::endl;
+            logFile << " < " << name << " : " << type << " > " << " already exists in current ScopeTable" << std::endl << std::endl;
             return false;
         }
 
@@ -209,7 +213,7 @@ public:
             temp = new SymbolInfo(name, type);
             prev->next = temp;
         }
-        std::cout << "Inserted in ScopeTable# " << this->id << " at position " << idx << ", " << pos << std::endl << std::endl;
+        logFile << "Inserted in ScopeTable# " << this->id << " at position " << idx << ", " << pos << std::endl << std::endl;
         return true;
     }
 
@@ -226,9 +230,9 @@ public:
             SymbolInfo * temp = bucket[hval];
             bucket[hval] = bucket[hval] -> next;
             delete temp;
-            std::cout << "Found in ScopeTable# " << this->id << "at position " << hval << ", " << 0 << std::endl;
+            logFile << "Found in ScopeTable# " << this->id << "at position " << hval << ", " << 0 << std::endl;
 
-            std::cout << "   Deleted entry at " << hval << ", " << 0 << " from current ScopeTable" << std::endl << std::endl;
+            logFile << "   Deleted entry at " << hval << ", " << 0 << " from current ScopeTable" << std::endl << std::endl;
 
             return true;
         }
@@ -242,31 +246,31 @@ public:
             if((*idx).getName() == element){
                 prev-> next = idx->next;
                 delete idx;
-                std::cout << "Found in ScopeTable# " << this->id << "at position " << hval << ", " << pos << std::endl;
-                std::cout << "   Deleted entry at " << hval << ", " << pos << " from current ScopeTable" << std::endl << std::endl;
+                logFile << "Found in ScopeTable# " << this->id << "at position " << hval << ", " << pos << std::endl;
+                logFile << "   Deleted entry at " << hval << ", " << pos << " from current ScopeTable" << std::endl << std::endl;
                 pos++;
                 return true;
             }
             prev = idx;
 
         }
-        std::cout << element <<" not found" << std::endl;
+        logFile << element <<" not found" << std::endl;
         return false;
     }
 
     void print(){
-        std::cout<< " ScopeTable # " << this->id << std::endl;
+        logFile<< " ScopeTable # " << this->id << std::endl;
         for(int idx = 0; idx < bucketSize; idx++){
             SymbolInfo * temp;
             temp = bucket[idx];
-            std::cout << " " << idx << " --> ";
+            logFile << " " << idx << " --> ";
             while(temp){
-                std::cout << " < " << temp->getName() << " : " << temp->getType() << " > " ;
+                logFile << " < " << temp->getName() << " : " << temp->getType() << " > " ;
                 temp = temp -> next;
             }
-            std::cout << std::endl;
+            logFile << std::endl;
         }
-        std::cout << std::endl;
+        logFile << std::endl;
     }
 
     ///Must needed!!
@@ -326,7 +330,7 @@ public:
         ScopeTable * temp = currentScope->parentScope;
         head.pop_back();
         length--;
-        std::cout << "ScopeTable with id " << currentScope->id  << " removed" << std::endl << std::endl;
+        logFile << "ScopeTable with id " << currentScope->id  << " removed" << std::endl << std::endl;
         delete currentScope;
         currentScope = temp;
     }
@@ -342,7 +346,7 @@ public:
     void printCurrentScope(){
         if(!currentScope)
             currentScope->print();
-        std::cout << "The current scope is null\n";
+        logFile << "The current scope is null\n";
         
     }
 
@@ -351,7 +355,7 @@ public:
         for(it = head.begin(); it != head.end(); ++it){
             (*it)->print();
         }
-        std::cout << '\n';
+        logFile << '\n';
     }
 
 };
@@ -359,9 +363,12 @@ public:
 int ScopeTable::count = 0;
 int ScopeTable::bucketSize = 7;
 
+
+
 int main(){
 
     SymbolTable sTable;
+
     sTable.enterScope();
 
     char inp;
@@ -371,7 +378,7 @@ int main(){
 
     std::cout << "('I' to insert,'L' to look up,'P' to print,'D' to remove" << std::endl;
     std::cout << "'S' to enter new Scope,'E' to exit Scope)" << std:: endl;
-    std::cout << ">>";
+    std::cout << "(type)>>";
 
     while(std::cin >> inp){
         
@@ -415,9 +422,10 @@ int main(){
         }
         std::cout << "('I' to insert,'L' to look up,'P' to print,'D' to remove" << std::endl;
         std::cout << "'S' to enter new Scope,'E' to exit Scope)" << std:: endl;
-        std::cout << ">>";
+        std::cout << "(type)>>";
     }
 
+    logFile.close();
     return 0;
 
 }
