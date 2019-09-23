@@ -4,3 +4,6 @@
 *.o
 *.out
 tempCodeRunnerFile.cpp
+log.txt
+token.txt
+lex.yy.c
