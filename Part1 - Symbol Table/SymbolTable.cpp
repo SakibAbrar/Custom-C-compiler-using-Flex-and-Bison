@@ -181,7 +181,7 @@ public:
 
         SymbolInfo* temp = lookUp(name);
 
-        //std::cout << "all fine" << std::endl;
+        std::cout << "all fine" << std::endl;
 
 
         /// we won't be allowing any duplicate(by name) in each ScopeTables
@@ -296,7 +296,7 @@ public:
     ScopeTable * currentScope;
 
     SymbolTable(){
-        currentScope = nullptr;
+        currentScope = new ScopeTable();
         length = 0;
     }
 

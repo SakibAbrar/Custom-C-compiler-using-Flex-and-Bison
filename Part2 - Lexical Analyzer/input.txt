@@ -1,4 +1,7 @@
-if 
-else
-abul
-mia
+
+int main(){
+    int _;
+    int b;
+    a = a + b;
+    return 0;
+}

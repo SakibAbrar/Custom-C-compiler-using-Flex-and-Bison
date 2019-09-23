@@ -1,0 +1,98 @@
+New ScopeTable with id 1 created
+
+Inserted in ScopeTable# 1 at position 5, 0
+
+ ScopeTable # 1
+ 5 -->  < LPAREN : ( > 
+
+Inserted in ScopeTable# 1 at position 0, 0
+
+ ScopeTable # 1
+ 0 -->  < RPAREN : ) > 
+ 5 -->  < LPAREN : ( > 
+
+Not found
+
+Inserted in ScopeTable# 1 at position 0, 1
+
+ ScopeTable # 1
+ 0 -->  < RPAREN : ) >  < LCURL : { > 
+ 5 -->  < LPAREN : ( > 
+
+Inserted in ScopeTable# 1 at position 6, 0
+
+ ScopeTable # 1
+ 0 -->  < RPAREN : ) >  < LCURL : { > 
+ 5 -->  < LPAREN : ( > 
+ 6 -->  < SEMICOLON : ; > 
+
+Found in ScopeTable# 1at position 6, 0
+
+ < SEMICOLON : ; >  already exists in current ScopeTable
+
+ ScopeTable # 1
+ 0 -->  < RPAREN : ) >  < LCURL : { > 
+ 5 -->  < LPAREN : ( > 
+ 6 -->  < SEMICOLON : ; > 
+
+Inserted in ScopeTable# 1 at position 4, 0
+
+ ScopeTable # 1
+ 0 -->  < RPAREN : ) >  < LCURL : { > 
+ 4 -->  < ASSIGNOP : = > 
+ 5 -->  < LPAREN : ( > 
+ 6 -->  < SEMICOLON : ; > 
+
+Inserted in ScopeTable# 1 at position 2, 0
+
+ ScopeTable # 1
+ 0 -->  < RPAREN : ) >  < LCURL : { > 
+ 2 -->  < ADDOP : + > 
+ 4 -->  < ASSIGNOP : = > 
+ 5 -->  < LPAREN : ( > 
+ 6 -->  < SEMICOLON : ; > 
+
+Found in ScopeTable# 1at position 6, 0
+
+ < SEMICOLON : ; >  already exists in current ScopeTable
+
+ ScopeTable # 1
+ 0 -->  < RPAREN : ) >  < LCURL : { > 
+ 2 -->  < ADDOP : + > 
+ 4 -->  < ASSIGNOP : = > 
+ 5 -->  < LPAREN : ( > 
+ 6 -->  < SEMICOLON : ; > 
+
+Not found
+
+Inserted in ScopeTable# 1 at position 5, 1
+
+ ScopeTable # 1
+ 0 -->  < RPAREN : ) >  < LCURL : { > 
+ 2 -->  < ADDOP : + > 
+ 4 -->  < ASSIGNOP : = > 
+ 5 -->  < LPAREN : ( >  < CONST_INT : 0 > 
+ 6 -->  < SEMICOLON : ; > 
+
+Found in ScopeTable# 1at position 6, 0
+
+ < SEMICOLON : ; >  already exists in current ScopeTable
+
+ ScopeTable # 1
+ 0 -->  < RPAREN : ) >  < LCURL : { > 
+ 2 -->  < ADDOP : + > 
+ 4 -->  < ASSIGNOP : = > 
+ 5 -->  < LPAREN : ( >  < CONST_INT : 0 > 
+ 6 -->  < SEMICOLON : ; > 
+
+Not found
+
+Inserted in ScopeTable# 1 at position 2, 1
+
+ ScopeTable # 1
+ 0 -->  < RPAREN : ) >  < LCURL : { > 
+ 2 -->  < ADDOP : + >  < RCURL : } > 
+ 4 -->  < ASSIGNOP : = > 
+ 5 -->  < LPAREN : ( >  < CONST_INT : 0 > 
+ 6 -->  < SEMICOLON : ; > 
+

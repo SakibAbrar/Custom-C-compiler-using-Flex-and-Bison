@@ -3,7 +3,7 @@
 #include <list>
 #include <cstdio>
 
-std::ofstream logFile("log.txt");
+std::ofstream logFile("SymbolTableLog.txt");
 
 
 
@@ -102,8 +102,10 @@ public:
     ScopeTable(ScopeTable* parent){
 
         bucket = new SymbolInfo*[bucketSize];
+        size = new int[bucketSize];
         for(int idx = 0; idx<bucketSize; idx++){
             bucket[idx] = nullptr;
+            size[idx] = 0; 
         }
         parentScope = parent;
         id = ++count;
@@ -141,9 +143,17 @@ public:
     ///this looks up in the scope table and returns a SymbolInfo pointer
     SymbolInfo* lookUp(std::string s){
         int hval;
-
+        
         hval = hash(s);
         int pos = 0;
+        ///std::cout << "all fine" << std::endl;
+        if(!bucket[hval]){
+            return nullptr;
+        }
+        ///std::cout << "all fine" << std::endl;
+
+        SymbolInfo* idx = bucket[hval];
+
         for(SymbolInfo* idx = bucket[hval]; idx!=nullptr; idx = idx->next){
 
             if((*idx).getName() == s){
@@ -152,7 +162,8 @@ public:
             }
             pos++;
 
-        }
+        }        
+        ///std::cout << "all fine" << std::endl;
 
         logFile << "Not found" << std::endl << std::endl;
 
@@ -165,7 +176,7 @@ public:
 
         SymbolInfo* temp = lookUp(name);
 
-        //std::cout << "all fine" << std::endl;
+        ///std::cout << "all fine" << std::endl;
 
 
         /// we won't be allowing any duplicate(by name) in each ScopeTables
@@ -179,10 +190,11 @@ public:
 
         int pos = 0;
 
-        //std::cout << "all fine" << std::endl;
+        ///std::cout << "all fine" << std::endl;
 
         if(!temp){
             bucket[idx] = new SymbolInfo(name, type);
+            bucket[idx]->next = nullptr;
             //std::cout << "all fine" << std::endl;
         }
 
@@ -195,6 +207,7 @@ public:
                 pos++;
             }
             temp = new SymbolInfo(name, type);
+            temp->next = nullptr;
             prev->next = temp;
         }
         logFile << "Inserted in ScopeTable# " << this->id << " at position " << idx << ", " << pos << std::endl << std::endl;
@@ -257,6 +270,25 @@ public:
         logFile << std::endl;
     }
 
+    void printNonEmptyBucket(){
+        logFile<< " ScopeTable # " << this->id << std::endl;
+        for(int idx = 0; idx < bucketSize; idx++){
+            SymbolInfo * temp;
+            temp = bucket[idx];
+            
+            if(!temp)
+                continue;
+            
+            logFile << " " << idx << " --> ";
+            while(temp){
+                logFile << " < " << temp->getName() << " : " << temp->getType() << " > " ;
+                temp = temp -> next;
+            }
+            logFile << std::endl;
+        }
+        logFile << std::endl;
+    }
+
     ///Must needed!!
     ///else you may keep getting null pointer exceptions
     ///and segmentation fault:core dumped later.
@@ -280,8 +312,10 @@ public:
     ScopeTable * currentScope;
 
     SymbolTable(){
-        currentScope = nullptr;
+        currentScope = new ScopeTable();
+        head.push_back(currentScope);
         length = 0;
+        length++;
     }
 
     void enterScope(){
@@ -328,9 +362,17 @@ public:
     }
 
     void printCurrentScope(){
-        if(!currentScope)
+        if(currentScope)
             currentScope->print();
-        logFile << "The current scope is null\n";
+        else
+            logFile << "The current scope is null\n"; 
+    }
+
+    void printCurrentScopeNonEmptyBucket(){
+        if(currentScope)
+            currentScope->printNonEmptyBucket();
+        else
+            logFile << "The current scope is null\n";
         
     }
 
