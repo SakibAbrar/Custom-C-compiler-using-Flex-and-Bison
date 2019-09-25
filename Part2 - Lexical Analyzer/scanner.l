@@ -40,9 +40,10 @@ DIGIT [0-9]
 NEWLINE \n
 IDENTIFIER ({LETTER}|_)+({LETTER}|{DIGIT}|_)*
 CONST_INTEGER [-+]?{DIGIT}+
-CONST_FLOAT [-+]?({DIGIT}*\.?{DIGIT}+|{DIGIT}+\.{DIGIT}*)((E|e)[-+]?{DIGIT}+)?
-CONST_CHAR1 \'[^\n\t\'\"\\]\'
-CONST_CHAR2 \'(\\)[^\n\t]\'
+FLOAT_WITHOUT_EXP [-+]?({DIGIT}*\.?{DIGIT}+|{DIGIT}+\.{DIGIT}*)
+CONST_FLOAT {FLOAT_WITHOUT_EXP}((E|e)[-+]?{DIGIT}+)?
+CONST_CHAR1 [^\n\t\'\"\\]
+CONST_CHAR2 (\\)[^\n\t]
 
 %%
 
@@ -50,85 +51,94 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 
 "if"	{
 			tokenout << "<IF>";
-			logout << "Line no " << line_count << ": TOKEN <IF> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <IF> Lexeme <" << yytext << "> found\n";
 		}
 		
 "else"	{
 			tokenout << "<ELSE>";
-			logout << "Line no " << line_count << ": TOKEN <ELSE> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <ELSE> Lexeme <" << yytext << "> found\n";
 		}
 
 "for"	{
 			tokenout << "<FOR>";
-			logout << "Line no " << line_count << ": TOKEN <FOR> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <FOR> Lexeme <" << yytext << "> found\n";
 		}
 
 "while"	{
 			tokenout << "<WHILE>";
-			logout << "Line no " << line_count << ": TOKEN <WHILE> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <WHILE> Lexeme <" << yytext << "> found\n";
 		}
 
 "do"	{
 			tokenout << "<DO>";
-			logout << "Line no " << line_count << ": TOKEN <DO> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <DO> Lexeme <" << yytext << "> found\n";
 		}
 
 "break"	{
 			tokenout << "<BREAK>";
-			logout << "Line no " << line_count << ": TOKEN <BREAK> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <BREAK> Lexeme <" << yytext << "> found\n";
 		}
 
 "int"	{
 			tokenout << "<INT>";
-			logout << "Line no " << line_count << ": TOKEN <INT> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <INT> Lexeme <" << yytext << "> found\n";
 		}
 
 "char"	{
 			tokenout << "<CHAR>";
-			logout << "Line no " << line_count << ": TOKEN <CHAR> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <CHAR> Lexeme <" << yytext << "> found\n";
 		}
 
 "float"	{
 			tokenout << "<FLOAT>";
-			logout << "Line no " << line_count << ": TOKEN <FLOAT> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <FLOAT> Lexeme <" << yytext << "> found\n";
 		}
 
 "void"	{
 			tokenout << "<VOID>";
-			logout << "Line no " << line_count << ": TOKEN <VOID> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <VOID> Lexeme <" << yytext << "> found\n";
 		}
 
 "return"	{
 			tokenout << "<RETURN>";
-			logout << "Line no " << line_count << ": TOKEN <RETURN> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <RETURN> Lexeme <" << yytext << "> found\n";
 		}
 
 "switch"	{
 			tokenout << "<SWITCH>";
-			logout << "Line no " << line_count << ": TOKEN <SWITCH> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <SWITCH> Lexeme <" << yytext << "> found\n";
 		}
 
 "case"	{
 			tokenout << "<CASE>";
-			logout << "Line no " << line_count << ": TOKEN <CASE> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <CASE> Lexeme <" << yytext << "> found\n";
 		}
 
 "default"	{
 			tokenout << "<DEFAULT>";
-			logout << "Line no " << line_count << ": TOKEN <DEFAULT> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <DEFAULT> Lexeme <" << yytext << "> found\n";
 		}
 
 "continue"	{
 			tokenout << "<CONTINUE>";
-			logout << "Line no " << line_count << ": TOKEN <CONTINUE> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <CONTINUE> Lexeme <" << yytext << "> found\n";
 		}
 
 
 {IDENTIFIER} {
-			tokenout << "<ID," << yytext << ">";
-			logout << "Line no " << line_count << ": TOKEN <ID> Lexeme " << yytext << " found\n";
+			tokenout << "<ID,<" << yytext << ">>";
+			logout << "Line no " << line_count << ": TOKEN <ID> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "ID");
 			symbolTable.printCurrentScopeNonEmptyBucket();
+		}
+
+[0-9]+{IDENTIFIER} {
+			error_count++;
+			logout << "Error at Line no " << line_count << ": Invalid prefix on ID or invalid suffix on Number <"<< yytext <<"> found\n"; 
+		}
+
+{FLOAT_WITHOUT_EXP}((E|e)[-+]?{FLOAT_WITHOUT_EXP}+) {
+			logout << "Error at Line no " << line_count << ": Ill formed number <"<< yytext <<"> found\n";
 		}
 
 
@@ -137,7 +147,7 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 
 "-" 	{
 			tokenout << "<ADDOP>";
-			logout << "Line no " << line_count << ": TOKEN <ADDOP> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <ADDOP> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "ADDOP");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
@@ -149,7 +159,7 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 
 "%"		{
 			tokenout << "<MULOP>";
-			logout << "Line no " << line_count << ": TOKEN <MULOP> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <MULOP> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "MULOP");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
@@ -159,7 +169,7 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 
 "--"	{
 			tokenout << "<INCOP>";
-			logout << "Line no " << line_count << ": TOKEN <INCOP> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <INCOP> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "INCOP");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
@@ -177,14 +187,14 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 
 "!="	{
 			tokenout << "<RELOP>";
-			logout << "Line no " << line_count << ": TOKEN <RELOP> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <RELOP> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "RELOP");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "="		{
 			tokenout << "<ASSIGNOP>";
-			logout << "Line no " << line_count << ": TOKEN <ASSIGNOP> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <ASSIGNOP> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "ASSIGNOP");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
@@ -193,7 +203,7 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 
 "||"	{
 			tokenout << "<LOGICOP>";
-			logout << "Line no " << line_count << ": TOKEN <LOGICOP> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <LOGICOP> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "LOGICOP");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
@@ -209,70 +219,70 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 
 "<<"	{
 			tokenout << "<BITOP>";
-			logout << "Line no " << line_count << ": TOKEN <BITOP> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <BITOP> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "BITOP");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "!"		{
 			tokenout << "<NOT>";
-			logout << "Line no " << line_count << ": TOKEN <NOT> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <NOT> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "NOT");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "("		{
 			tokenout << "<LPAREN>";
-			logout << "Line no " << line_count << ": TOKEN <LPAREN> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <LPAREN> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "LPAREN");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 ")"		{
 			tokenout << "<RPAREN>";
-			logout << "Line no " << line_count << ": TOKEN <RPAREN> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <RPAREN> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "RPAREN");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "{"		{
 			tokenout << "<LCURL>";
-			logout << "Line no " << line_count << ": TOKEN <LCURL> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <LCURL> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "LCURL");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "}"		{
 			tokenout << "<RCURL>";
-			logout << "Line no " << line_count << ": TOKEN <RCURL> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <RCURL> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "RCURL");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "["		{
 			tokenout << "<LTHIRD>";
-			logout << "Line no " << line_count << ": TOKEN <LTHIRD> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <LTHIRD> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "LTHIRD");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "]"		{
 			tokenout << "<RTHIRD>";
-			logout << "Line no " << line_count << ": TOKEN <RTHIRD> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <RTHIRD> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "RTHIRD");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 ","		{
 			tokenout << "<COMMA>";
-			logout << "Line no " << line_count << ": TOKEN <COMMA> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <COMMA> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "COMMA");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 ";"		{
 			tokenout << "<SEMICOLON>";
-			logout << "Line no " << line_count << ": TOKEN <SEMICOLON> Lexeme " << yytext << " found\n";
+			logout << "Line no " << line_count << ": TOKEN <SEMICOLON> Lexeme <" << yytext << "> found\n";
 			symbolTable.insert(yytext, "SEMICOLON");
 			symbolTable.printCurrentScopeNonEmptyBucket();
 		}				
@@ -280,26 +290,27 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 		
 {CONST_INTEGER}	{
 				tokenout << "<CONST_INT>";
-				logout << "Line no " << line_count << ": TOKEN <CONST_INT> Lexeme " << yytext << " found\n";
+				logout << "Line no " << line_count << ": TOKEN <CONST_INT> Lexeme <" << yytext << "> found\n";
 				symbolTable.insert(yytext, "CONST_INT");
 				symbolTable.printCurrentScopeNonEmptyBucket();
 			}
 
 {CONST_FLOAT}	{
 				tokenout << "<CONST_FLOAT>";
-				logout << "Line no " << line_count << ": TOKEN <CONST_FLOAT> Lexeme " << yytext << " found\n";
+				logout << "Line no " << line_count << ": TOKEN <CONST_FLOAT> Lexeme <" << yytext << "> found\n";
 				symbolTable.insert(yytext, "CONST_FLOAT");
 				symbolTable.printCurrentScopeNonEmptyBucket();
 			}
 
-{CONST_CHAR1} 	{
+\'{CONST_CHAR1}\' 	{
 				tokenout << "<CONST_CHAR>";
-				logout << "Line no " << line_count << ": TOKEN <CONST_CHAR> Lexeme " << yytext << " found\n";
+				logout << "Line no " << line_count << ": TOKEN <CONST_CHAR> Lexeme <" << yytext << "> found\n";
 				symbolTable.insert(yytext, "CONST_CHAR");
 				symbolTable.printCurrentScopeNonEmptyBucket();
 			}
 
-{CONST_CHAR2} 	{ 
+
+\'{CONST_CHAR2}\' 	{ 
 				char c = yytext[2];
 				switch(c) 
 				{
@@ -319,6 +330,26 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 				symbolTable.printCurrentScopeNonEmptyBucket();
 			}
 
+\'({CONST_CHAR1}|{CONST_CHAR2})+({CONST_CHAR1}|{CONST_CHAR2})+\' {
+				error_count++;
+				logout << "Error at Line no " << line_count << ": Multi character constant error <"<< yytext <<"> found\n";
+			}
+
+
+\'\' 		{
+				error_count++;
+				logout << "Error at Line no " << line_count << ": Empty character constant <"<< yytext <<"> found\n";
+			}
+
+\'\\\' 		{
+				error_count++;
+				logout << "Error at Line no " << line_count << ": Unterminated character <"<< yytext <<"> found\n";
+			}
+
+\'({CONST_CHAR1}|{CONST_CHAR2})[^\'] {
+				error_count++;
+				logout << "Error at Line no " << line_count << ": Unfinished character <"<< yytext <<"> found\n";
+			}
 
 \"			{
 				stringLexeme = "\"";
@@ -350,10 +381,31 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 		}
 	}
 
+<string>\n {
+			string_line_count++;
+			error_count++;
+			stringLexeme+=yytext;
+			logout << "Error at Line no " << line_count << ": Unterminated String <"<< stringLexeme <<"> found\n";
+			line_count += string_line_count;
+			string_line_count = 0;
+			stringLexeme = "";
+			BEGIN(INITIAL);
+		}
+
+<string><<EOF>> {
+			string_line_count++;
+			error_count++;
+			logout << "Error at Line no " << line_count << ": Unterminated String <"<< stringLexeme <<"> found\n";
+			line_count += string_line_count;
+			string_line_count = 0;
+			stringLexeme = "";
+			BEGIN(INITIAL);
+		}
+
 <string>\"  {
 				stringLexeme+="\"";
 				tokenout << "<STRING>";
-				logout << "Line no " << line_count << ": TOKEN <STRING> Lexeme " << stringLexeme << " found\n";
+				logout << "Line no " << line_count << ": TOKEN <STRING> Lexeme <" << stringLexeme << "> found\n";
 				line_count+=string_line_count;
 				stringLexeme = "";
 				string_line_count = 0;
@@ -377,11 +429,20 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 
 <singleLineComment>\n {
 				comment_line_count++;
-				logout << "Line no " << line_count << ": TOKEN <SINGLELINECOMMENT> Lexeme " << commentLexeme << " found\n";
+				logout << "Line no " << line_count << ": TOKEN <SINGLELINECOMMENT> Lexeme <" << commentLexeme << "> found\n";
 				line_count+=comment_line_count;
 				comment_line_count = 0;
 				BEGIN(INITIAL);
 			}
+
+<singleLineComment><<EOF>> { 
+			error_count++;
+			logout << "Error at Line no " << line_count << ": Unterminated Comment <"<< commentLexeme <<"> found\n";
+			line_count += comment_line_count;
+			comment_line_count = 0;
+			commentLexeme = "";
+			BEGIN(INITIAL);
+		}
 
 "/*" 		{
 				commentLexeme = "/*";
@@ -403,10 +464,21 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 
 <multiLineComment>"*/" {
 				commentLexeme += yytext;
-				logout << "Line no " << line_count << ": TOKEN <MULTILINECOMMENT> Lexeme " << commentLexeme << " found\n";
-				line_count+=comment_line_count;
+				logout << "Line no " << line_count << ": TOKEN <MULTILINECOMMENT> Lexeme <" << commentLexeme << "> found\n";
+				line_count += comment_line_count;
+				commentLexeme = "";
 				BEGIN(INITIAL);
 			}
+
+<multiLineComment><<EOF>> { 
+			error_count++;
+			logout << "Error at Line no " << line_count << ": Unterminated Comment <"<< commentLexeme <<"> found\n";
+			line_count += comment_line_count;
+			comment_line_count = 0;
+			commentLexeme = "";
+			BEGIN(INITIAL);
+		}
+
 
 {WHITESPACE} {
 				///do nothing
@@ -415,6 +487,7 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 
 . 			{
 				//error generation
+				logout << "Error at Line no " << line_count << ": Unrecognized character <"<< yytext <<"> found\n";
 			}
 			
 
@@ -439,6 +512,8 @@ int main(int argc,char *argv[]){
 	yyin= fin;
 	yylex();
 	fclose(yyin);
+	logout << "Total lines: " << line_count << "\n";
+	logout << "Total errors: " << error_count << "\n";
 	logout.close();
 	tokenout.close();
 	return 0;
