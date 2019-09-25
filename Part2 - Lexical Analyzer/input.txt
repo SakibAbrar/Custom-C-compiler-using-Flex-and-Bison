@@ -2,6 +2,14 @@ int main(){
     int _;
     int b;
     a = a + b;
+    char *str = "sakib is a goodboi\
+    forgive him for his mistakes";
     float result = 10.012;
+    //let me catch this baalsaal \
+        kichu bolar ase?
+    /*
+        ami amar naam bolbo
+        na 
+    */
     return 0;
 }

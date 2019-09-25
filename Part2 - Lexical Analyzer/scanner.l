@@ -11,7 +11,8 @@
 using namespace std;
 
 ///Managing line count and error count tasks
-int lineCnt;
+int string_line_count = 0;
+int comment_line_count = 0;
 int line_count = 1;
 int error_count = 0;
 
@@ -20,12 +21,18 @@ ofstream logout;
 ofstream tokenout;
 string logString;
 string tokenString;
+string stringLexeme;
+string commentLexeme;
 //////SymbolTable tasks
 int ScopeTable::count = 0;
 int ScopeTable::bucketSize = 7;
 SymbolTable symbolTable;
 
 %}
+
+%x singleLineComment
+%x multiLineComment
+%x string 
 
 WHITESPACE [ \t\f\r\v]+ 
 LETTER [a-zA-Z]
@@ -126,10 +133,9 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 
 
 
-
 "+"		|
 
-"-"		{
+"-" 	{
 			tokenout << "<ADDOP>";
 			logout << "Line no " << line_count << ": TOKEN <ADDOP> Lexeme " << yytext << " found\n";
 			symbolTable.insert(yytext, "ADDOP");
@@ -313,6 +319,94 @@ CONST_CHAR2 \'(\\)[^\n\t]\'
 				symbolTable.printCurrentScopeNonEmptyBucket();
 			}
 
+
+\"			{
+				stringLexeme = "\"";
+				string_line_count = 0;
+				BEGIN(string);
+			}
+
+<string>[^\"\\\n]+ {
+				stringLexeme+=yytext;
+			}
+
+<string>\\\n {
+				string_line_count++;
+				stringLexeme+=yytext;
+			}
+
+<string>\\. {
+		switch(yytext[1]) 
+		{
+			case 'n' : stringLexeme += '\n'; break;
+			case 'a' : stringLexeme += '\a'; break;		
+			case 'f' : stringLexeme += '\f'; break;
+			case 'r' : stringLexeme += '\r'; break;
+			case 't' : stringLexeme += '\t'; break;
+			case 'b' : stringLexeme += '\b'; break;
+			case 'v' : stringLexeme += '\v'; break;
+			case '0' : stringLexeme += '\0'; break;
+			default: stringLexeme += yytext[1]; break;
+		}
+	}
+
+<string>\"  {
+				stringLexeme+="\"";
+				tokenout << "<STRING>";
+				logout << "Line no " << line_count << ": TOKEN <STRING> Lexeme " << stringLexeme << " found\n";
+				line_count+=string_line_count;
+				stringLexeme = "";
+				string_line_count = 0;
+				BEGIN(INITIAL);
+			}
+
+"//" 		{
+				commentLexeme = "//";
+				comment_line_count = 0;
+				BEGIN(singleLineComment);
+			}
+
+<singleLineComment>[^\n\\]* {
+				commentLexeme += yytext;
+			}
+
+<singleLineComment>(\\)+(\n) {
+				commentLexeme +=yytext;
+				comment_line_count++;
+			}
+
+<singleLineComment>\n {
+				comment_line_count++;
+				logout << "Line no " << line_count << ": TOKEN <SINGLELINECOMMENT> Lexeme " << commentLexeme << " found\n";
+				line_count+=comment_line_count;
+				comment_line_count = 0;
+				BEGIN(INITIAL);
+			}
+
+"/*" 		{
+				commentLexeme = "/*";
+				BEGIN(multiLineComment);
+			}
+
+<multiLineComment>\n {
+				comment_line_count++;
+				commentLexeme += yytext;
+			}
+
+<multiLineComment>[^*\n]+ {
+				commentLexeme += yytext;
+			}
+
+<multiLineComment>"*"[^*/\n] {
+				commentLexeme += yytext;
+			}
+
+<multiLineComment>"*/" {
+				commentLexeme += yytext;
+				logout << "Line no " << line_count << ": TOKEN <MULTILINECOMMENT> Lexeme " << commentLexeme << " found\n";
+				line_count+=comment_line_count;
+				BEGIN(INITIAL);
+			}
 
 {WHITESPACE} {
 				///do nothing
