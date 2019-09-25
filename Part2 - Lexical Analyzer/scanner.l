@@ -23,7 +23,7 @@ string tokenString;
 //////SymbolTable tasks
 int ScopeTable::count = 0;
 int ScopeTable::bucketSize = 7;
-SymbolTable SymbolTable;
+SymbolTable symbolTable;
 
 %}
 
@@ -31,6 +31,11 @@ WHITESPACE [ \t\f\r\v]+
 LETTER [a-zA-Z]
 DIGIT [0-9]
 NEWLINE \n
+IDENTIFIER ({LETTER}|_)+({LETTER}|{DIGIT}|_)*
+CONST_INTEGER [-+]?{DIGIT}+
+CONST_FLOAT [-+]?({DIGIT}*\.?{DIGIT}+|{DIGIT}+\.{DIGIT}*)((E|e)[-+]?{DIGIT}+)?
+CONST_CHAR1 \'[^\n\t\'\"\\]\'
+CONST_CHAR2 \'(\\)[^\n\t]\'
 
 %%
 
@@ -112,9 +117,11 @@ NEWLINE \n
 		}
 
 
-([a-zA-Z]|"_")+[a-zA-Z0-9_]* {
+{IDENTIFIER} {
 			tokenout << "<ID," << yytext << ">";
 			logout << "Line no " << line_count << ": TOKEN <ID> Lexeme " << yytext << " found\n";
+			symbolTable.insert(yytext, "ID");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 
@@ -125,8 +132,8 @@ NEWLINE \n
 "-"		{
 			tokenout << "<ADDOP>";
 			logout << "Line no " << line_count << ": TOKEN <ADDOP> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("ADDOP", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "ADDOP");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 
@@ -137,8 +144,8 @@ NEWLINE \n
 "%"		{
 			tokenout << "<MULOP>";
 			logout << "Line no " << line_count << ": TOKEN <MULOP> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("MULOP", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "MULOP");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 		
 
@@ -147,8 +154,8 @@ NEWLINE \n
 "--"	{
 			tokenout << "<INCOP>";
 			logout << "Line no " << line_count << ": TOKEN <INCOP> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("INCOP", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "INCOP");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 
@@ -165,15 +172,15 @@ NEWLINE \n
 "!="	{
 			tokenout << "<RELOP>";
 			logout << "Line no " << line_count << ": TOKEN <RELOP> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("RELOP", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "RELOP");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "="		{
 			tokenout << "<ASSIGNOP>";
 			logout << "Line no " << line_count << ": TOKEN <ASSIGNOP> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("ASSIGNOP", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "ASSIGNOP");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "&&"	|
@@ -181,8 +188,8 @@ NEWLINE \n
 "||"	{
 			tokenout << "<LOGICOP>";
 			logout << "Line no " << line_count << ": TOKEN <LOGICOP> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("LOGICOP", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "LOGICOP");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 
@@ -197,79 +204,123 @@ NEWLINE \n
 "<<"	{
 			tokenout << "<BITOP>";
 			logout << "Line no " << line_count << ": TOKEN <BITOP> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("BITOP", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "BITOP");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "!"		{
 			tokenout << "<NOT>";
 			logout << "Line no " << line_count << ": TOKEN <NOT> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("NOT", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "NOT");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "("		{
 			tokenout << "<LPAREN>";
 			logout << "Line no " << line_count << ": TOKEN <LPAREN> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("LPAREN", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "LPAREN");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 ")"		{
 			tokenout << "<RPAREN>";
 			logout << "Line no " << line_count << ": TOKEN <RPAREN> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("RPAREN", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "RPAREN");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "{"		{
 			tokenout << "<LCURL>";
 			logout << "Line no " << line_count << ": TOKEN <LCURL> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("LCURL", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "LCURL");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "}"		{
 			tokenout << "<RCURL>";
 			logout << "Line no " << line_count << ": TOKEN <RCURL> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("RCURL", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "RCURL");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "["		{
 			tokenout << "<LTHIRD>";
 			logout << "Line no " << line_count << ": TOKEN <LTHIRD> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("LTHIRD", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "LTHIRD");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 "]"		{
 			tokenout << "<RTHIRD>";
 			logout << "Line no " << line_count << ": TOKEN <RTHIRD> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("RTHIRD", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "RTHIRD");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 ","		{
 			tokenout << "<COMMA>";
 			logout << "Line no " << line_count << ": TOKEN <COMMA> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("COMMA", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			symbolTable.insert(yytext, "COMMA");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}
 
 ";"		{
 			tokenout << "<SEMICOLON>";
-			logout << "Line no " << line_count << ": TOKEN <RTHISEMICOLONRD> Lexeme " << yytext << " found\n";
-			SymbolTable.insert("SEMICOLON", yytext);
-			SymbolTable.printCurrentScopeNonEmptyBucket();
+			logout << "Line no " << line_count << ": TOKEN <SEMICOLON> Lexeme " << yytext << " found\n";
+			symbolTable.insert(yytext, "SEMICOLON");
+			symbolTable.printCurrentScopeNonEmptyBucket();
 		}				
 
 		
-{DIGIT}+ 	{
+{CONST_INTEGER}	{
 				tokenout << "<CONST_INT>";
 				logout << "Line no " << line_count << ": TOKEN <CONST_INT> Lexeme " << yytext << " found\n";
-				SymbolTable.insert("CONST_INT", yytext);
-				SymbolTable.printCurrentScopeNonEmptyBucket();
+				symbolTable.insert(yytext, "CONST_INT");
+				symbolTable.printCurrentScopeNonEmptyBucket();
+			}
+
+{CONST_FLOAT}	{
+				tokenout << "<CONST_FLOAT>";
+				logout << "Line no " << line_count << ": TOKEN <CONST_FLOAT> Lexeme " << yytext << " found\n";
+				symbolTable.insert(yytext, "CONST_FLOAT");
+				symbolTable.printCurrentScopeNonEmptyBucket();
+			}
+
+{CONST_CHAR1} 	{
+				tokenout << "<CONST_CHAR>";
+				logout << "Line no " << line_count << ": TOKEN <CONST_CHAR> Lexeme " << yytext << " found\n";
+				symbolTable.insert(yytext, "CONST_CHAR");
+				symbolTable.printCurrentScopeNonEmptyBucket();
+			}
+
+{CONST_CHAR2} 	{ 
+				char c = yytext[2];
+				switch(c) 
+				{
+					case 'n': c = '\n'; break;
+					case 't': c = '\t'; break;
+					case 'a': c = '\a'; break;
+					case 'v': c = '\v'; break;
+					case 'f': c = '\f'; break;
+					case 'r': c = '\r'; break;
+					case 'b': c = '\b'; break;
+					case '0': c = '\0'; break;
+					default: break;	
+				}
+				tokenout << "<CONST_CHAR>";
+				logout << "Line no " << line_count << ": TOKEN <CONST_CHAR> Lexeme " << c << " found\n";
+				symbolTable.insert(yytext, "CONST_CHAR");
+				symbolTable.printCurrentScopeNonEmptyBucket();
+			}
+
+
+{WHITESPACE} {
+				///do nothing
+				//just eat up
+			}
+
+. 			{
+				//error generation
 			}
 			
 

@@ -1,98 +1,173 @@
 New ScopeTable with id 1 created
 
-Inserted in ScopeTable# 1 at position 5, 0
-
- ScopeTable # 1
- 5 -->  < LPAREN : ( > 
-
-Inserted in ScopeTable# 1 at position 0, 0
-
- ScopeTable # 1
- 0 -->  < RPAREN : ) > 
- 5 -->  < LPAREN : ( > 
-
-Not found
-
-Inserted in ScopeTable# 1 at position 0, 1
-
- ScopeTable # 1
- 0 -->  < RPAREN : ) >  < LCURL : { > 
- 5 -->  < LPAREN : ( > 
-
 Inserted in ScopeTable# 1 at position 6, 0
 
  ScopeTable # 1
- 0 -->  < RPAREN : ) >  < LCURL : { > 
- 5 -->  < LPAREN : ( > 
- 6 -->  < SEMICOLON : ; > 
-
-Found in ScopeTable# 1at position 6, 0
-
- < SEMICOLON : ; >  already exists in current ScopeTable
-
- ScopeTable # 1
- 0 -->  < RPAREN : ) >  < LCURL : { > 
- 5 -->  < LPAREN : ( > 
- 6 -->  < SEMICOLON : ; > 
-
-Inserted in ScopeTable# 1 at position 4, 0
-
- ScopeTable # 1
- 0 -->  < RPAREN : ) >  < LCURL : { > 
- 4 -->  < ASSIGNOP : = > 
- 5 -->  < LPAREN : ( > 
- 6 -->  < SEMICOLON : ; > 
+ 6 -->  < main : ID > 
 
 Inserted in ScopeTable# 1 at position 2, 0
 
  ScopeTable # 1
- 0 -->  < RPAREN : ) >  < LCURL : { > 
- 2 -->  < ADDOP : + > 
- 4 -->  < ASSIGNOP : = > 
- 5 -->  < LPAREN : ( > 
- 6 -->  < SEMICOLON : ; > 
-
-Found in ScopeTable# 1at position 6, 0
-
- < SEMICOLON : ; >  already exists in current ScopeTable
-
- ScopeTable # 1
- 0 -->  < RPAREN : ) >  < LCURL : { > 
- 2 -->  < ADDOP : + > 
- 4 -->  < ASSIGNOP : = > 
- 5 -->  < LPAREN : ( > 
- 6 -->  < SEMICOLON : ; > 
-
-Not found
-
-Inserted in ScopeTable# 1 at position 5, 1
-
- ScopeTable # 1
- 0 -->  < RPAREN : ) >  < LCURL : { > 
- 2 -->  < ADDOP : + > 
- 4 -->  < ASSIGNOP : = > 
- 5 -->  < LPAREN : ( >  < CONST_INT : 0 > 
- 6 -->  < SEMICOLON : ; > 
-
-Found in ScopeTable# 1at position 6, 0
-
- < SEMICOLON : ; >  already exists in current ScopeTable
-
- ScopeTable # 1
- 0 -->  < RPAREN : ) >  < LCURL : { > 
- 2 -->  < ADDOP : + > 
- 4 -->  < ASSIGNOP : = > 
- 5 -->  < LPAREN : ( >  < CONST_INT : 0 > 
- 6 -->  < SEMICOLON : ; > 
+ 2 -->  < ( : LPAREN > 
+ 6 -->  < main : ID > 
 
 Not found
 
 Inserted in ScopeTable# 1 at position 2, 1
 
  ScopeTable # 1
- 0 -->  < RPAREN : ) >  < LCURL : { > 
- 2 -->  < ADDOP : + >  < RCURL : } > 
- 4 -->  < ASSIGNOP : = > 
- 5 -->  < LPAREN : ( >  < CONST_INT : 0 > 
- 6 -->  < SEMICOLON : ; > 
+ 2 -->  < ( : LPAREN >  < ) : RPAREN > 
+ 6 -->  < main : ID > 
+
+Not found
+
+Inserted in ScopeTable# 1 at position 2, 2
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL > 
+ 6 -->  < main : ID > 
+
+Not found
+
+Inserted in ScopeTable# 1 at position 2, 3
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID > 
+ 6 -->  < main : ID > 
+
+Not found
+
+Inserted in ScopeTable# 1 at position 2, 4
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON > 
+ 6 -->  < main : ID > 
+
+Not found
+
+Inserted in ScopeTable# 1 at position 2, 5
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID > 
+ 6 -->  < main : ID > 
+
+Found in ScopeTable# 1at position 2, 4
+
+ < ; : SEMICOLON >  already exists in current ScopeTable
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID > 
+ 6 -->  < main : ID > 
+
+Not found
+
+Inserted in ScopeTable# 1 at position 2, 6
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID > 
+ 6 -->  < main : ID > 
+
+Not found
+
+Inserted in ScopeTable# 1 at position 2, 7
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID >  < = : ASSIGNOP > 
+ 6 -->  < main : ID > 
+
+Found in ScopeTable# 1at position 2, 6
+
+ < a : ID >  already exists in current ScopeTable
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID >  < = : ASSIGNOP > 
+ 6 -->  < main : ID > 
+
+Not found
+
+Inserted in ScopeTable# 1 at position 2, 8
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID >  < = : ASSIGNOP >  < + : ADDOP > 
+ 6 -->  < main : ID > 
+
+Found in ScopeTable# 1at position 2, 5
+
+ < b : ID >  already exists in current ScopeTable
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID >  < = : ASSIGNOP >  < + : ADDOP > 
+ 6 -->  < main : ID > 
+
+Found in ScopeTable# 1at position 2, 4
+
+ < ; : SEMICOLON >  already exists in current ScopeTable
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID >  < = : ASSIGNOP >  < + : ADDOP > 
+ 6 -->  < main : ID > 
+
+Inserted in ScopeTable# 1 at position 3, 0
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID >  < = : ASSIGNOP >  < + : ADDOP > 
+ 3 -->  < result : ID > 
+ 6 -->  < main : ID > 
+
+Found in ScopeTable# 1at position 2, 7
+
+ < = : ASSIGNOP >  already exists in current ScopeTable
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID >  < = : ASSIGNOP >  < + : ADDOP > 
+ 3 -->  < result : ID > 
+ 6 -->  < main : ID > 
+
+Inserted in ScopeTable# 1 at position 4, 0
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID >  < = : ASSIGNOP >  < + : ADDOP > 
+ 3 -->  < result : ID > 
+ 4 -->  < 10.012 : CONST_FLOAT > 
+ 6 -->  < main : ID > 
+
+Found in ScopeTable# 1at position 2, 4
+
+ < ; : SEMICOLON >  already exists in current ScopeTable
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID >  < = : ASSIGNOP >  < + : ADDOP > 
+ 3 -->  < result : ID > 
+ 4 -->  < 10.012 : CONST_FLOAT > 
+ 6 -->  < main : ID > 
+
+Not found
+
+Inserted in ScopeTable# 1 at position 2, 9
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID >  < = : ASSIGNOP >  < + : ADDOP >  < 0 : CONST_INT > 
+ 3 -->  < result : ID > 
+ 4 -->  < 10.012 : CONST_FLOAT > 
+ 6 -->  < main : ID > 
+
+Found in ScopeTable# 1at position 2, 4
+
+ < ; : SEMICOLON >  already exists in current ScopeTable
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID >  < = : ASSIGNOP >  < + : ADDOP >  < 0 : CONST_INT > 
+ 3 -->  < result : ID > 
+ 4 -->  < 10.012 : CONST_FLOAT > 
+ 6 -->  < main : ID > 
+
+Not found
+
+Inserted in ScopeTable# 1 at position 2, 10
+
+ ScopeTable # 1
+ 2 -->  < ( : LPAREN >  < ) : RPAREN >  < { : LCURL >  < _ : ID >  < ; : SEMICOLON >  < b : ID >  < a : ID >  < = : ASSIGNOP >  < + : ADDOP >  < 0 : CONST_INT >  < } : RCURL > 
+ 3 -->  < result : ID > 
+ 4 -->  < 10.012 : CONST_FLOAT > 
+ 6 -->  < main : ID > 
 
